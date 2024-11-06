@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpCode,
+	Param,
+	ParseIntPipe,
+	Post,
+	Put,
+	Query,
+	UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoriaService } from '../application/categoria.service';
 import { CategoriaDto } from '../application/dtos/Categoria/categoria.dto';
@@ -24,7 +36,7 @@ export class CategoriaController {
 	@Get(':id')
 	@ApiResponse({ status: 200, type: CategoriaDto })
 	@ApiResponse({ status: 404, description: 'No se encontro categoria.' })
-	async findOne(@Param('id') id: number): Promise<CategoriaDto> {
+	async findOne(@Param('id', ParseIntPipe) id: number): Promise<CategoriaDto> {
 		return await this.categoriaService.findByIdAsycn(id);
 	}
 

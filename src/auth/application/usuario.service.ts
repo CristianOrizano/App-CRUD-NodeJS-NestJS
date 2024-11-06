@@ -11,11 +11,23 @@ import { Usuario } from '../domain/usuario.entity';
 import { UsuarioDto } from './dtos/Usuario/usuario.dto';
 import { UsuariosaveDto } from './dtos/Usuario/usuario.save.dto';
 
+import { ConfigService } from '@nestjs/config';
+
+import * as dayjs from 'dayjs';
+import * as utc from 'dayjs/plugin/utc';
+import * as timezone from 'dayjs/plugin/timezone';
+import * as duration from 'dayjs/plugin/duration';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(duration);
+
 @Injectable()
 export class UsuarioService implements IUsuarioService {
 	constructor(
 		private readonly usuarioRepository: UsuarioRepository,
 		private readonly jwtService: JwtService,
+		private readonly configService: ConfigService,
 		@InjectMapper()
 		private readonly mapper: Mapper,
 	) {}
@@ -81,9 +93,18 @@ export class UsuarioService implements IUsuarioService {
 		const payload = { sub: user.id, email: user.email, role: user.role };
 		const token = await this.jwtService.signAsync(payload);
 		const usuarioDto = this.mapper.map(user, Usuario, UsuarioDto);
-
+		// Obtiene el tiempo de expiración desde la variable de entorno
+		const expirationTime = this.configService.get<string>('JWT_EXPIRATION_TIME') || '1h';
+		const hours = parseInt(expirationTime.replace('h', ''), 10);
 		const security = new UsuarioSecurityDto();
-		(security.expiresAt = '2024-10-10'), (security.token = token), (security.usuario = usuarioDto);
+
+		const expirationDate = dayjs()
+			.add(dayjs.duration(hours, 'hour'))
+			.tz('America/Lima')
+			.format('YYYY-MM-DD HH:mm:ss');
+
+		security.expiresAt = expirationDate;
+		(security.token = token), (security.usuario = usuarioDto);
 
 		return security;
 	}

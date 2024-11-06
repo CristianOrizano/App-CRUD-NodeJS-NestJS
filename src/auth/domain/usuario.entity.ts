@@ -27,6 +27,7 @@ export class Usuario {
 	@Column({ type: 'bit', nullable: true, transformer: { from: (v: Buffer) => !!v.readInt8(0), to: v => v } })
 	estado: boolean;
 
+	@AutoMap(() => Role)
 	@ManyToOne(() => Role, role => role.users, { onDelete: 'SET NULL' }) // Define la relación con Role
 	@JoinColumn({ name: 'idRole' })
 	role: Role;

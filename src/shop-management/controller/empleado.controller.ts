@@ -5,12 +5,13 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { EmpleadoSaveDto } from '../application/dtos/Empleado/empleado.save.dto';
 import { PageResponse } from '../shared/page/pageResponse';
 import { EmpleadoFilter } from '../application/dtos/Empleado/empleadoFilter.dto';
+import { Roles } from 'src/auth/guard/decorator/authorized.decorator';
 
 @ApiTags('Empleado')
 @Controller('api/empleado')
 export class EmpleadoController {
 	constructor(private readonly empleadoService: EmpleadoService) {}
-
+	@Roles('USER', 'ADMIN')
 	@Get()
 	@ApiOperation({
 		summary: 'Obtener todos los empleados',
@@ -70,11 +71,17 @@ export class EmpleadoController {
 		type: [EmpleadoDto],
 	})
 	@ApiResponse({ status: 404, description: 'No se encontraron empleados.' })
-	@ApiQuery({ name: 'page', required: false, description: 'Número de página para la paginación.' })
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		description: 'Número de página para la paginación.',
+		type: Number,
+	})
 	@ApiQuery({
 		name: 'rows',
 		required: false,
 		description: 'Número máximo de empleados por página.',
+		type: Number,
 	})
 	@ApiQuery({ name: 'nombre', required: false, description: 'Filtrar por nombre de empleado.' })
 	@ApiQuery({ name: 'apellido', required: false, description: 'Filtrar por apellido de empleado.' })
@@ -82,20 +89,19 @@ export class EmpleadoController {
 	@ApiQuery({ name: 'sueldo', required: false, description: 'Filtrar por sueldo de empleado.' })
 	@ApiQuery({ name: 'telefono', required: false, description: 'Filtrar por telefono de empleado.' })
 	async paginated(
-		@Query('page') page: number,
-		@Query('rows') rows: number,
+		@Query('page') page: string,
+		@Query('rows') rows: string,
 		@Query('nombre') nombre: string,
 		@Query('apellido') apellido: string,
 		@Query('fecha') fecha: Date,
 		@Query('sueldo') sueldo: number,
 		@Query('telefono') telefono: number,
 	): Promise<PageResponse<EmpleadoDto>> {
-		//const sueldonu = parseInt(sueldo+"", 10) || 1;
-		//const pageNumber = parseInt(page+"", 10) || 1;
-		//const rowsNumber = parseInt(rows+"", 10) || 10;
+		const pageNumber = parseInt(page, 10) || 1;
+		const rowsNumber = parseInt(rows, 10) || 10;
 		const filters: EmpleadoFilter = {
-			rows: rows ?? 10,
-			page: parseInt(page + '') || 1,
+			rows: rowsNumber,
+			page: pageNumber,
 			nombre,
 			apellido,
 			fecha,

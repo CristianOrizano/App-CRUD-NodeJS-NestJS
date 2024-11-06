@@ -4,6 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { UsuarioDto } from '../usuario.dto';
 import { Usuario } from 'src/auth/domain/usuario.entity';
 import { UsuariosaveDto } from '../usuario.save.dto';
+import { Role } from 'src/auth/domain/role.entity';
+import { RoleDto } from '../../Role/role.dto';
 
 @Injectable()
 export class UsuarioProfile extends AutomapperProfile {
@@ -14,6 +16,7 @@ export class UsuarioProfile extends AutomapperProfile {
 		return mapper => {
 			createMap(mapper, UsuarioDto, Usuario);
 			createMap(mapper, Usuario, UsuarioDto);
+			createMap(mapper, Role, RoleDto);
 			createMap(mapper, UsuariosaveDto, Usuario);
 		};
 	}

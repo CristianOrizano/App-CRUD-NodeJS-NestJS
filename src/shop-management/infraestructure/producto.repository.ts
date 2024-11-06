@@ -12,7 +12,6 @@ export class ProductoRepository implements IProductoRepository {
 		private productoRepository: Repository<Producto>,
 	) {}
 	async findAllAsycn(): Promise<Producto[]> {
-		const aa = await this.productoRepository.find({ relations: { categoria: true } });
 		return await this.productoRepository.find({ relations: { categoria: true } });
 	}
 	async findByIdAsycn(id: number): Promise<Producto> {

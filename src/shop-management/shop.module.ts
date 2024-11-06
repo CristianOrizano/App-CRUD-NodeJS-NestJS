@@ -20,6 +20,8 @@ import { ProductoController } from './controller/producto.controller';
 
 @Module({
 	imports: [
+		// gestiona los repositorios de estas entidades en el contexto del módulo,
+		// permitiéndote inyectar Repository<Categoria> y otros repositorios especificados en los servicios
 		TypeOrmModule.forFeature([Empleado, Categoria, Producto]),
 		AutomapperModule.forRoot({
 			strategyInitializer: classes(),

@@ -18,7 +18,7 @@ export class UsuarioRepository implements IUsuarioRepository {
 		return await this.usuarioRepository.find();
 	}
 	async findByIdAsycn(id: number): Promise<Usuario> {
-		return await this.usuarioRepository.findOne({ where: { id } });
+		return await this.usuarioRepository.findOne({ where: { id }, relations: { role: true } });
 	}
 	async saveAsycn(usuario: Usuario): Promise<Usuario> {
 		return await this.usuarioRepository.save(usuario);

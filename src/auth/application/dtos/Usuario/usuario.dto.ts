@@ -1,4 +1,5 @@
 import { AutoMap } from '@automapper/classes';
+import { RoleDto } from '../Role/role.dto';
 
 export class UsuarioDto {
 	@AutoMap()
@@ -15,4 +16,6 @@ export class UsuarioDto {
 	idRole: number;
 	@AutoMap()
 	estado: boolean;
+	@AutoMap()
+	role: RoleDto;
 }
